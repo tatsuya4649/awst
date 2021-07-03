@@ -24,7 +24,7 @@ function terminate_allinstances(){
                 .[].InstanceId"
         )
         if [ -z "$TERMINATE_INSTANCE_IDS" ]; then
-
+		echo "no running instance..."
                 exit 1
         fi
         echo -e "Now Running Instances($TAGS):\n$TERMINATE_INSTANCE_IDS"
