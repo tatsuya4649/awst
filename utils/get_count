@@ -25,5 +25,3 @@ function get_tag_instances_count(){
         eval echo "TAG\(\"$1\"\) COUNT:" $3
         echo "$TAG_INSTANCE_COUNT"
 }
-
-get_tag_instances_count $1 $2 $3

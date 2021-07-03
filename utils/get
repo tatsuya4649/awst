@@ -29,5 +29,3 @@ function get_tag_instances(){
         fi
 }
 
-
-get_tag_instances $1 $2 $3
