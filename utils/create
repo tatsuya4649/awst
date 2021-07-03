@@ -15,8 +15,9 @@ source ./utils/create_tag
 # SG => security group ids
 # SUBNETID => subnet id
 #
-# $1: File to send
+# $1: InitScripts to send
 # $2: Copy distination file 
+# $@: File to send
 function create_ec2(){
         get_imageid
         get_instancetype
@@ -53,18 +54,27 @@ function create_ec2(){
         wait_for_running $CREATE_INSTANCE_IDS
         wait_for_status_ok $CREATE_INSTANCE_IDS
 
-	shift
-
+	INIT_SCRIPT="$1"
+	DEST="$2"
+	shift 2
 	for INSTANCE in "$INSTANCE_IDS"; do
-		send_init_script "$INSTANCE" "$1" "$2" $@
+		send_init_script -d "$DEST" "$INSTANCE" "$INIT_SCRIPT" $@
 	done
 }
 
 # send init script to new instances
 function send_init_script(){
+	while getopts ":d:" OPT; do
+		case $OPT in
+			d) DEST_DIR=$OPTARG
+				;;
+			\?) ;;
+		esac
+	done
+	shift $((OPTIND-1))
 	# check insatnce
 	if [ -z "$1" ]; then
-		echo '$INSTANCE is empty...'
+		echo '$SEND_INSTANCE is empty...'
 		continue
 	else
 		SEND_INSTANCE="$1"
@@ -75,17 +85,12 @@ function send_init_script(){
 		exit 0
 	fi
 	SEND_FILE="$2"
-	# check destination
-	if [ -z "$3" ]; then
-		echo "no destination of copy..."
-	 	exit 0
-	fi
-	DEST_DIR="$3"
 	# get IP Address
+	
 	SENDIP=$(aws ec2 describe-instances | \
-	jq -r ".Reservations | \ 
-	select( .[].Instances[].InstanceId == \"$SEND_INSTANCE\") |\
-	.[].Instances[0].PublicIpAddress")
+	jq -r ".Reservations[].Instances | \
+	select(.[].InstanceId == \"$SEND_INSTANCE\") | \
+	.[0].PublicIpAddress")
 	if [ -z "$SENDIP" ]; then
 		echo "$INSTANCE IPAddress(\$SENDIP) is empty..."
 		continue
@@ -102,16 +107,18 @@ function send_init_script(){
 		echo '$USERNAME variables is empty...'
 		exit 1
 	fi
+	DEST_DIR=${DEST_DIR:-"/home/$USERNAME"}
 	# send 'init script file' to new instance
-	scp -i $KEYPATH $SEND_FILE $USERNAME@$SENDIP:${DEST_DIR:-"/home/ubuntu/"}
-	echo "\tsend $SEND_FILE => $(USERNAME):$INSTANCE($SENDIP): $DEST_DIR"
+	scp -i $KEYPATH $SEND_FILE $USERNAME@$SENDIP:$DEST_DIR
+	echo "\tsend $SEND_FILE => ($USERNAME):$INSTANCE($SENDIP): $DEST_DIR"
 	# shift argument
 	shift 3
 	# send file to instance
 	for FILE in $@; do
 		# send 'file' to new instance
-		scp -i $KEYPATH $FILE $USERNAME@$SENDIP:${DEST_DIR:-"/home/ubuntu/"}
-		echo "\tsend $SEND_FILE => $USERNAME:$INSTANCE($SENDIP): $DEST_DIR"
+		scp -i $KEYPATH $FILE $USERNAME@$SENDIP:$DEST_DIR
+		echo -e "\tsend $SEND_FILE => $USERNAME:$INSTANCE($SENDIP): $DEST_DIR"
+		ssh -i $KEYPATH $USERNAME@$SENDIP "/bin/bash $DEST_DIR/$(echo $SEND_FILE | cut -d/ -f2)"
 	done
 }
 

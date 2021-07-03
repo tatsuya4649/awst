@@ -8,6 +8,7 @@ function create(){
 		echo -e "\t-i: Init Script file (default \"file://init.sh\")"
 		echo -e "\t-d: Destination of copy (default \"/home/ubuntu/\")"
 		exit 1
+
 	}
 	while getopts ":i:h" OPT; do
 		case $OPT in
@@ -23,7 +24,6 @@ function create(){
 	done
 	shift $((OPTIND-1))
 
-	#INIT_SCRIPTS=${INIT_SCRIPTS:-"file://../init.sh"}
 	INIT_SCRIPTS=${INIT_SCRIPTS:-"../init.sh"}
 
 	echo "Init Script File => $INIT_SCRIPTS"
