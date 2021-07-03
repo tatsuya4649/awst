@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # get_tag_instance
-source utils/get
+source ./utils/get
 
-funcion get(){
+function get(){
 	function usage_exit(){
 		echo "Usage: $0 [-t Tag] [-s State]"
 		echo -e "\t-t: Search Tag(\"Key=key,Values=value\")"

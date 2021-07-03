@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source utils/create
+source ./utils/create
 
 function create(){
 	function usage_exit(){

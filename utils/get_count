@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # tag_check,state_check
-source ./check
+source utils/check
 
 # GET Instances Count from Tag
 # $1 Searching Tag

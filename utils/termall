@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # get_tag
-source ../gets
+source utils/gets
 # tag_check
-source ../check
+source utils/check
 
 # required: $TAGS (terminate all match TAG instance)
 # All Instances

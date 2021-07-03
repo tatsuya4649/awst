@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # tag_check
-source ./check
+source utils/check
 # get_tag
-source ./gets
+source utils/gets
 
 #
 # $1 USERNAME

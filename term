@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source utils/term
+source ./utils/term
 
 function term(){
 	function usage_exit(){

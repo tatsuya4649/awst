@@ -2,9 +2,9 @@
 
 # get_imageid,get_instancetype,get_securitygroup,
 # get_keybname,get_subnetid,get_tag
-source utils/gets
+source ./utils/gets
 # create_tag_function
-source utils/create_tag
+source ./utils/create_tag
 
 #
 #       Create EC2 Server
