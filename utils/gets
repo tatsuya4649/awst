@@ -1,0 +1,72 @@
+#!/bin/bash
+# Get script function
+
+DIR="."
+
+# Setting Tag
+# TAGS => setting Tag
+function get_tag(){
+        TAG_FILE="$DIR/TAG"
+        if [ -f $TAG_FILE ];then
+                TAGS=$(cat $TAG_FILE)
+        else
+                echo "not found $TAG_FILE..."
+                exit 1
+        fi
+}
+
+# Get Image Id
+# IMAGEID => AWS EC2 Image ID
+function get_imageid(){
+        IMAGEID_FILE="$DIR/IMAGEID"
+        if [ -f $IMAGEID_FILE ]; then
+                IMAGEID=$(cat $IMAGEID_FILE)
+        else echo "not found $IMAGEID_FILE"
+                exit 1
+        fi
+}
+
+# Get EC2 InstanceType
+# INSTANCETYPE => AWS EC2 Instance-Type
+function get_instancetype(){
+        INSTANCETYPE_FILE="$DIR/INSTANCETYPE"
+        if [ -f $INSTANCETYPE_FILE ];then
+                INSTANCETYPE=$(cat $INSTANCETYPE_FILE)
+        else
+                echo "not found $INSTANCETYPE_FILE"
+                exit 1
+        fi
+}
+
+# Get EC2 SecurityGroup for MySQL Server
+function get_securitygroup(){
+        SG_FILE="$DIR/SECURITYGROUP"
+        if [ -f $SG_FILE ]; then
+                SG=$(cat $SG_FILE)
+        else
+                echo "not found $SG_FILE"
+                exit 1
+        fi
+}
+
+# Get EC2 KeyPair Name
+function get_keyname(){
+        KEYNAME_FILE="$DIR/KEYNAME"
+        if [ -f $KEYNAME_FILE ]; then
+                KEYNAME=$(cat $KEYNAME_FILE)
+        else
+                echo "not found $KEYNAME_FILE"
+                exit 1
+        fi
+}
+
+# Get EC2 Subnet ID
+function get_subnetid(){
+        SN_FILE="$DIR/SUBNETID"
+        if [ -f $SN_FILE ]; then
+                SUBNETID=$(cat $SN_FILE)
+        else
+                echo "not found $SN_FILE"
+                exit 1
+        fi
+}

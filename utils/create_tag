@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Create Tag Per One Instance
+function create_tag_instance(){
+        if [ -z "$1" ]; then
+                echo "nothing intance..."
+                jxit 1
+        fi
+        if [ -z "$TAGS" ]; then
+                echo "nothing tags..."
+                exit 1
+        fi
+
+        aws ec2 create-tags \
+                --resources $1 \
+                --tags $TAGS
+        echo "Create Tags => $TAGS"
+}
+
