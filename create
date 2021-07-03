@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./utils/create
+source utils/create
 
 function create(){
 	function usage_exit(){
@@ -20,8 +20,6 @@ function create(){
 	done
 
 	INIT_SCRIPTS=${INIT_SCRIPTS:-"file://init.sh"}
-
-	SCRIPTS=$(cat $INIT_SCRIPTS)
 
 	echo "Init Script File => $INIT_SCRIPTS"
 	# Creating Instance
