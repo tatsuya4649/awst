@@ -38,5 +38,5 @@ function get(){
 	# second argument: STATE
 	eval "echo \"Search State => $STATE\" $QUIET"
 	eval "echo \"Search Tag => $TAGS\" $QUIET"
-	get_tag_instance $TAGS $STATE $QUIET
+	get_tag_instances $TAGS $STATE $QUIET
 }

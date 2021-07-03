@@ -3,8 +3,7 @@
 # get_tag_instances_count
 source utils/get_count
 
-function get_count(){
-	function usage_exit(){
+function get_count(){ function usage_exit(){
 		echo "Usage: $0 [-t Tag] [-s State]"
 		echo -e "\t-t: Search Tag(\"Key=key,Values=value\")"
 		echo -e "\t-s: Search State(default \"running\")"
@@ -32,7 +31,7 @@ function get_count(){
 	# Default Search State => "running"
 	STATE=${STATE:-"running"}
 	if [ -z "$TAGS" ]; then
-		get_mysql_tag
+		get_tag
 	fi
 	# first argument: TAGS
 	# second argument: STATE

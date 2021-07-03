@@ -9,7 +9,7 @@ source utils/check
 # $3 Quiet Option
 #
 # return $TAG_INSTANCEID <= tag insatnces id
-function get_tag_instance(){
+function get_tag_instances(){
 	tag_check $1
         state_check $2
         TAG_INSTANCEID=$(
