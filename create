@@ -23,5 +23,5 @@ function create(){
 
 	echo "Init Script File => $INIT_SCRIPTS"
 	# Creating Instance
-	create_mysql_ec2 "$INIT_SCRIPTS"
+	create_ec2 "$INIT_SCRIPTS"
 }
