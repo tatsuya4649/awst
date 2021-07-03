@@ -1,0 +1,53 @@
+#!/bin/bash
+
+source utils/check
+
+# GET Instances Count from Tag
+# $1 Searching Tag
+# $2 Searching Status (of instances)
+# $3 Quiet Option
+#
+# return $TAG_INSTANCE_COUNT <= tag insatnces id
+function get_tag_instances_count(){
+	tag_check $1
+        state_check $2
+        TAG_INSTANCE_COUNT=$(
+                aws ec2 describe-instances | \
+                jq ".Reservations[].Instances | \
+                select(.[].State.Name == \"$2\") | \
+                select(.[].Tags != null) | \
+                select(.[].Tags[].Key == \"$KEY\") | \
+                select(.[].Tags[].Value == \"$VALUE\") | \
+                .[]" | \
+                jq -s ". | length"
+        )
+        eval echo "TAG\(\"$1\"\) COUNT:" $3
+        echo "$TAG_INSTANCE_COUNT"
+}
+
+# GET Instances Count from Tag
+# $1 Searching Tag
+# $2 Searching Status (of instances)
+# $3 Quiet Option
+#
+# return $TAG_INSTANCEID <= tag insatnces id
+function get_tag_instance(){
+	tag_check $1
+        state_check $2
+        TAG_INSTANCEID=$(
+                aws ec2 describe-instances | \
+                jq -r ".Reservations[].Instances | \
+                select(.[].State.Name == \"$2\") | \
+                select(.[].Tags != null) | \
+                select(.[].Tags[].Key == \"$KEY\") | \
+                select(.[].Tags[].Value == \"$VALUE\") | \
+                .[].InstanceId"
+        )
+        if [ -z "$TAG_INSTANCEID" ]; then
+                eval echo "TAG\(\"$1\"\) No Instance" $3
+        else
+                eval echo "TAG\(\"$1\"\) InstanceID:" $3
+                echo "$TAG_INSTANCEID"
+        fi
+}
+

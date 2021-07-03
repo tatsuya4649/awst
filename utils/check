@@ -1,0 +1,42 @@
+#!/bin/bash
+# Check scripts
+
+# Receive TAG, return Key/Value
+# Return $KEY,$Value
+function tag_check(){
+        if [ -z "$1" ]; then
+                echo "nothing tag..."
+                exit 1
+        fi
+        KEY=$(echo $1 | cut -d, -f1 | sed -n 1P | cut -d= -f2)
+        VALUE=$(echo $1 | cut -d, -f2 | sed -n 1P | cut -d= -f2)
+}
+
+# print usage of State
+function should_be_state(){
+        echo "State should be..."
+        echo -e "\trunning : running instance"
+        echo -e "\tpending : now launch"
+        echo -e "\tstopping : stop instance"
+        echo -e "\tshutting-down : state of terminating now"
+        echo -e "\tterminated : end of instances"
+        exit 1
+}
+
+# Receive State string, And Ckeck
+function state_check(){
+        if [ -z "$1" ]; then
+                echo "nothing state..."
+        fi
+        case "$1" in
+                "running" ) ;;
+                "pending" ) ;;
+                "stopping" ) ;;
+                "stopped" ) ;;
+                "terminated" ) ;;
+                "shutting-down" ) ;;
+                * ) should_be_state \
+                    ;;
+        esac
+}
+
