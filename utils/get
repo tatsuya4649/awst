@@ -10,7 +10,7 @@ source utils/check
 #
 # return $TAG_INSTANCEID <= tag insatnces id
 function get_tag_instances(){
-	tag_check ${1:-get_tag}
+	tag_check ${1:-$(get_tag)}
         state_check ${2:-"running"}
         TAG_INSTANCEID=$(
                 aws ec2 describe-instances | \
