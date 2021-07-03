@@ -40,9 +40,9 @@ function get_instancetype(){
 
 # Get EC2 SecurityGroup for MySQL Server
 function get_securitygroup(){
-        SG_FILE="$DIR/SECURITYGROUP"
+        SG_FILE="$DIR/SGID"
         if [ -f $SG_FILE ]; then
-                SG=$(cat $SG_FILE)
+                SGID=$(cat $SG_FILE)
         else
                 echo "not found $SG_FILE"
                 exit 1

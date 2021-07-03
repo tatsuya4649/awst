@@ -43,11 +43,10 @@ function create_ec2(){
                 --count ${2:-1}         \
                 --instance-type $INSTANCETYPE \
                 --key-name $KEYNAME \
-                --security-group-ids $SG \
+                --security-group-ids $SGID \
                 --subnet-id $SUBNETID \
                 $USERDATA
-                )
-
+	)
         INSTANCE_IDS=$(echo $INSTANCES | jq -r ".Instances[].InstanceId")
         CREATE_INSTANCE_IDS=$INSTANCE_IDS
         for INSTANCE in $INSTANCE_IDS; do
