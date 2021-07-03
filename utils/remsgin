@@ -8,6 +8,10 @@ source utils/gets
 # $3 => CIDR
 #
 function remove_sg_in(){
+	function usage_exit(){
+		echo "Usage: $0 PROTOCOL PORT CIDR"
+		exit 1
+	}
         get_securitygroup
         if [ -z "$SGID" ]; then
                 echo "not found security group..."
@@ -15,8 +19,7 @@ function remove_sg_in(){
         fi
 
         if [ -z "$1" -o -z "$2" -o -z "$3" ]; then
-                echo "argument error..."
-                exit 1
+		usage_exit
         fi
 
         aws ec2 revoke-security-group-ingress \
