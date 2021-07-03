@@ -25,3 +25,5 @@ function create(){
 	# Creating Instance
 	create_ec2 "$INIT_SCRIPTS"
 }
+
+create $@

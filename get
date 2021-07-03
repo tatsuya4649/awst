@@ -40,3 +40,5 @@ function get(){
 	eval "echo \"Search Tag => $TAGS\" $QUIET"
 	get_tag_instances $TAGS $STATE $QUIET
 }
+
+get $@

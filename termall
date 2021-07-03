@@ -6,3 +6,5 @@ source ./utils/termall
 function termall(){
 	terminate_allinstances
 }
+
+termall

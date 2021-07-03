@@ -26,3 +26,5 @@ function term(){
 	# Terminate Insatnce 
 	terminate_instance $1
 }
+
+term $1

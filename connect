@@ -33,3 +33,5 @@ function connect(){
 	fi 
 	connect_instance $1 $CONNECT_IP
 }
+
+connect $@

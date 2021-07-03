@@ -39,3 +39,5 @@ function get_count(){ function usage_exit(){
 	eval "echo \"Search Tag => $TAGS\" $QUIET"
 	get_tag_instances_count $TAGS $STATE $QUIET
 }
+
+get_count $@
