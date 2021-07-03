@@ -37,6 +37,7 @@ function create_ec2(){
 	echo $SG
 	echo $SUBNETID
 	echo $USERDATA
+	echo ${2:-1}
         INSTANCES=$(aws ec2 run-instances \
                 --image-id $IMAGEID \
                 --count ${2:-1}         \
