@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# get_tag
+source ../gets
+# tag_check
+source ../check
+
+# required: $TAGS (terminate all match TAG instance)
+# All Instances
+# return $TERMINATE_INSTANCE_IDS
+function terminate_allinstances(){
+        get_tag
+        if [ -z "$TAGS" ]; then
+                echo "not found TAGS..."
+        fi
+        tag_check $TAGS
+        TERMINATE_INSTANCE_IDS=$( \
+                aws ec2 describe-instances --filter Name=instance-state-name,Values=running | \
+                jq -r ".Reservations[].Instances | \
+                select(.[].State.Name==\"running\") | \
+                select(.[].Tags != null) | \
+                select(.[].Tags[].Key==\"$KEY\") | \
+                select(.[].Tags[].Value==\"$VALUE\") | \
+                .[].InstanceId"
+        )
+        if [ -z "$TERMINATE_INSTANCE_IDS" ]; then
+
+                exit 1
+        fi
+        echo -e "Now Running Instances($TAGS):\n$TERMINATE_INSTANCE_IDS"
+        aws ec2 terminate-instances --instance-ids $TERMINATE_INSTANCE_IDS
+        echo "Terminated $TERMINATE_INSTANCE_IDS"
+}

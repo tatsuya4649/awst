@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# tag_check
+source ./check
+# get_tag
+source ./gets
+
+#
+# $1 USERNAME
+# $2 IP(Optional)
+# required: KEYPATH file(this file must contain Secret Key File Path)
+#
+function connect_instance(){
+	if [ -z "$DIR" ];then
+		echo '$DIR variables is empty'
+		exit 1
+	fi
+	KEYPATH_FILE="$DIR/KEYPATH"
+	if [ -f $DIR/KEYPATH ]; then
+		KEYPATH=$(cat $KEYPATH_FILE)
+	else
+		echo "not found KEYPATH file..."
+		exit 1
+	fi
+	get_tag
+	if [ -z "$TAGS" ]; then
+		echo '$TAGS varibles is empty...'
+		exit 1
+	fi
+	get_ip_new_instance $TAGS
+	if [ -z "$NEWIP" ]; then
+		echo "No running instance..."
+		exit 1
+	else
+		echo $KEYPATH
+	fi
+	# if have argument 1
+	NEWIP=${2:-$NEWIP}
+	echo $NEWIP
+	ssh -i $KEYPATH $1@$NEWIP
+}
+
+# 
+# GET latest launched instance from TAGS
+# $1 Searching Tag
+function get_ip_new_instance(){
+	if [ -z "$1" ]; then
+		echo "not found tags..."
+		exit 1
+	fi
+	tag_check $1
+	NEWIP=$( \
+		aws ec2 describe-instances | \
+		jq -r ".Reservations[].Instances | \
+		select(.[].State.Name == \"running\") | \
+		select(.[].Tags[].Key == \"$KEY\") | \
+		select(.[].Tags[].Value == \"$VALUE\") | \
+		sort_by(.LaunchTime) | \
+		.[0].PublicIpAddress"
+	)
+	if [ -z "$NEWIP" ];then
+		echo "nothing running instance..."
+		exit 1
+	fi
+}

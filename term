@@ -1,18 +1,3 @@
 #!/bin/bash
 
-# $1 INSTANCE ID
-# Terminate Instances
-function terminate_instance(){
-        if [ -z "$1" ]; then
-                echo "nothing intance..."
-                exit 1
-        fi
-
-        aws ec2 terminate-instances \
-                --instance-id $1 > /dev/null 2>&1
-        if [ $? -eq 0 ];then
-                echo "Terminate Instance => $1"
-        else
-                echo "Failure Terminate Instance => $1"
-        fi
-}
+source utils/term
