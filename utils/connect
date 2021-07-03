@@ -37,6 +37,10 @@ function connect_instance(){
 	# if have argument 1
 	NEWIP=${2:-$NEWIP}
 	echo $NEWIP
+	if [ -z "$1" ];then
+		echo "no username..."
+		exit 1
+	fi
 	ssh -i $KEYPATH $1@$NEWIP
 }
 
