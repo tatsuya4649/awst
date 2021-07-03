@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# get_securitygroup
+source utils/gets
+#
+# $1 => PROTOCOL
+# $2 => PORT
+# $3 => CIDR
+#
+function add_sg_in(){
+        get_securitygroup
+        if [ -z "$SG" ]; then
+                echo "not found security group..."
+                exit 1
+        fi
+
+        if [ -z "$1" -o -z "$2" -o -z "$3" ]; then
+                echo "argument error..."
+                exit 1
+        fi
+
+        aws ec2 authorize-security-group-ingress \
+        --group-id "$SG" --protocol "$1" --port "$2" \
+        --cidr "$3"
+        aws describe-security-groups \
+        --group-ids "$SG"
+}
+
