@@ -2,6 +2,7 @@
 
 # tag_check,state_check
 source utils/check
+source utils/get
 
 # GET Instances Count from Tag
 # $1 Searching Tag
