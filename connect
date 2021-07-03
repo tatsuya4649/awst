@@ -21,10 +21,15 @@ function connect(){
 		esac
 	done
 
+	if [ -z "$1" ]; then
+		echo "no username..."
+		exit 1
+	fi
+
 	if [ -n "$CONNECT_IP" ]; then
 		echo "Connect IP => $CONNECT_IP"
 	else
 		echo "Connect Latest Launch Instance"
 	fi 
-	connect_instance $CONNECT_IP
+	connect_instance $1 $CONNECT_IP
 }
