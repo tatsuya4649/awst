@@ -19,7 +19,7 @@ function create(){
 		esac
 	done
 
-	INIT_SCRIPTS=${INIT_SCRIPTS:-"file://init.sh"}
+	INIT_SCRIPTS=${INIT_SCRIPTS:-"file://../init.sh"}
 
 	echo "Init Script File => $INIT_SCRIPTS"
 	# Creating Instance
