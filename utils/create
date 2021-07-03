@@ -35,7 +35,7 @@ function create_ec2(){
 	echo $INSTANCETYPE
 	echo $KEYNAME
 	echo $SG
-	echo $SEBNETID
+	echo $SUBNETID
 	echo $USERDATA
         INSTANCES=$(aws ec2 run-instances \
                 --image-id $IMAGEID \
