@@ -12,6 +12,8 @@ source utils/check
 function get_tag_instances(){
 	tag_check ${1:-$(get_tag)}
         state_check ${2:-"running"}
+	echo $KEY
+	echo $VALUE
         TAG_INSTANCEID=$(
                 aws ec2 describe-instances | \
                 jq -r ".Reservations[].Instances | \
