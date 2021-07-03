@@ -2,3 +2,29 @@
 
 # connect_instance
 source utils/connect
+
+function connect(){
+	function usage_exit(){
+		echo "Usage: $0 [-i IPAddress]"
+		echo -e "\t-i: IP Address (Default latest launch instance)"
+		exit 1
+	}
+
+	while getopts ":i:h" OPT;do
+		case $OPT in
+			i) CONNECT_IP=$OPTARG
+				;;
+			h) usage_exit
+				;;
+			\?) usage_exit
+				;;
+		esac
+	done
+
+	if [ -n "$CONNECT_IP" ]; then
+		echo "Connect IP => $CONNECT_IP"
+	else
+		echo "Connect Latest Launch Instance"
+	fi 
+	connect_instance $CONNECT_IP
+}

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+source ./create
+source ./connect
+source ./get
+source ./get_count
+source ./term
+source ./termall

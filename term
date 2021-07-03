@@ -1,3 +1,28 @@
 #!/bin/bash
 
 source utils/term
+
+function term(){
+	function usage_exit(){
+		echo "Usage: $0 InstanceID"
+		echo -e "\tInstanceID : Terminate Instance ID"
+		exit 1
+	}
+
+	while getopts ":h" OPT; do
+		case $OPT in
+			h) usage_exit
+				;;
+			\?) usage_exit
+				;;
+		esac
+	done
+
+	shift $(($OPTIND - 1))
+
+	if [ -z "$1" ];then
+		usage_exit
+	fi
+	# Terminate Insatnce 
+	terminate_instance $1
+}
