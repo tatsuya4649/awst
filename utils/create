@@ -15,7 +15,7 @@ source ./utils/create_tag
 # SG => security group ids
 # SUBNETID => subnet id
 #
-function create_mysql_ec2(){
+function create_ec2(){
         get_imageid
         get_instancetype
         get_securitygroup
@@ -26,7 +26,7 @@ function create_mysql_ec2(){
         if [ -n "$1" ];then
                 USERDATA="--user-data $1"
                 echo "Init Scripts:"
-                echo $USERDATA
+                echo "$USERDATA"
         else
                 USERDATA=
                 echo "Warning: No Init Scripts"
