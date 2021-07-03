@@ -9,7 +9,7 @@ source utils/gets
 #
 function remove_sg_in(){
         get_securitygroup
-        if [ -z "$SG" ]; then
+        if [ -z "$SGID" ]; then
                 echo "not found security group..."
                 exit 1
         fi
@@ -20,7 +20,7 @@ function remove_sg_in(){
         fi
 
         aws ec2 revoke-security-group-ingress \
-        --group-id "$SG" \
+        --group-id "$SGID" \
         --ip-permissions "[{\"ipProtocol\":\"$1\",\"FromPort\":\"$2\",\"ToPort\":\"$2\",\"IpRanges\":[{\"CidrIp\":\"$3\"}]}]"
         aws describe-security-groups \
         --group-ids "$SG"
