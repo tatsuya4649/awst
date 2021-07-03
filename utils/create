@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # get_imageid,get_instancetype,get_securitygroup,
-# get_keybname,get_subnetid,get_tag
+# get_keybname,get_subnetid,get_tag,get_keypath
 source ./utils/gets
 # create_tag_function
 source ./utils/create_tag
@@ -15,6 +15,8 @@ source ./utils/create_tag
 # SG => security group ids
 # SUBNETID => subnet id
 #
+# $1: File to send
+# $2: Copy distination file 
 function create_ec2(){
         get_imageid
         get_instancetype
@@ -33,12 +35,12 @@ function create_ec2(){
         fi
         INSTANCES=$(aws ec2 run-instances \
                 --image-id $IMAGEID \
-                --count ${2:-1}         \
+                --count ${CREATE_COUNT:-1}         \
                 --instance-type $INSTANCETYPE \
                 --key-name $KEYNAME \
                 --security-group-ids $SGID \
                 --subnet-id $SUBNETID \
-                $USERDATA
+                #$USERDATA
 	)
         INSTANCE_IDS=$(echo $INSTANCES | jq -r ".Instances[].InstanceId")
         CREATE_INSTANCE_IDS=$INSTANCE_IDS
@@ -48,8 +50,69 @@ function create_ec2(){
                 create_tag_instance $INSTANCE
         done
         # wait in background
-        wait_for_running $CREATE_INSTANCE_IDS &
-        wait_for_status_ok $CREATE_INSTANCE_IDS &
+        wait_for_running $CREATE_INSTANCE_IDS
+        wait_for_status_ok $CREATE_INSTANCE_IDS
+
+	shift
+
+	for INSTANCE in "$INSTANCE_IDS"; do
+		send_init_script "$INSTANCE" "$1" "$2" $@
+	done
+}
+
+# send init script to new instances
+function send_init_script(){
+	# check insatnce
+	if [ -z "$1" ]; then
+		echo '$INSTANCE is empty...'
+		continue
+	else
+		SEND_INSTANCE="$1"
+	fi
+	# check init scripts
+	if [ -z "$2" ]; then
+	 	echo "no init scripts to send"
+		exit 0
+	fi
+	SEND_FILE="$2"
+	# check destination
+	if [ -z "$3" ]; then
+		echo "no destination of copy..."
+	 	exit 0
+	fi
+	DEST_DIR="$3"
+	# get IP Address
+	SENDIP=$(aws ec2 describe-instances | \
+	jq -r ".Reservations | \ 
+	select( .[].Instances[].InstanceId == \"$SEND_INSTANCE\") |\
+	.[].Instances[0].PublicIpAddress")
+	if [ -z "$SENDIP" ]; then
+		echo "$INSTANCE IPAddress(\$SENDIP) is empty..."
+		continue
+	fi
+	# get keypath to connect instance
+	get_keypath
+	if [ -z "$KEYPATH" ]; then
+		echo '$KEYPATH varibles is empty...'
+		exit 1
+	fi
+	# get username of instance
+	get_username
+	if [ -z "$USERNAME" ]; then
+		echo '$USERNAME variables is empty...'
+		exit 1
+	fi
+	# send 'init script file' to new instance
+	scp -i $KEYPATH $SEND_FILE $USERNAME@$SENDIP:${DEST_DIR:-"/home/ubuntu/"}
+	echo "\tsend $SEND_FILE => $(USERNAME):$INSTANCE($SENDIP): $DEST_DIR"
+	# shift argument
+	shift 3
+	# send file to instance
+	for FILE in $@; do
+		# send 'file' to new instance
+		scp -i $KEYPATH $FILE $USERNAME@$SENDIP:${DEST_DIR:-"/home/ubuntu/"}
+		echo "\tsend $SEND_FILE => $USERNAME:$INSTANCE($SENDIP): $DEST_DIR"
+	done
 }
 
 # wait for creating EC2 instances

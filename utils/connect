@@ -15,11 +15,9 @@ function connect_instance(){
 		echo '$DIR variables is empty'
 		exit 1
 	fi
-	KEYPATH_FILE="$DIR/KEYPATH"
-	if [ -f $DIR/KEYPATH ]; then
-		KEYPATH=$(cat $KEYPATH_FILE)
-	else
-		echo "not found KEYPATH file..."
+	get_keypath
+	if [ -z "$KEYPATH" ]; then
+		echo '$KEYPATH varibles is empty...'
 		exit 1
 	fi
 	get_tag
