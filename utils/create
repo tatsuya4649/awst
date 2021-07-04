@@ -118,14 +118,13 @@ function send_init_script(){
 	echo "Send file => $*"
 	# send file to instance
 	for ARG in "$@"; do
-		echo $ARG
 		LENGTH=$(echo $ARG | jq ". | length")
 
 		for ((i=0;i<$LENGTH;i++));do
 			FILE=$(echo $ARG | jq -r ".[$i].name")
 			DEST=$(echo $ARG | jq -r ".[$i].dest")
 			# send 'file' to new instance
-			scp -r -i $KEYPATH $FILE $USERNAME@$SENDIP:$DEST
+			scp -rp -i $KEYPATH $FILE $USERNAME@$SENDIP:$DEST
 			echo -e "\tsend $FILE => $USERNAME:$INSTANCE($SENDIP): $DEST"
 		done
 	done
