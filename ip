@@ -21,6 +21,7 @@ function ip(){
 			;;
 		\?)	usage_exit
 			;;
+		esac
 	done
 
 	if [ -z "$TAGS" ];then
