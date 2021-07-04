@@ -4,13 +4,17 @@ source utils/create
 
 function create(){
 	function usage_exit(){
-		echo "Usage: $0 [-i Init Script file]"
+		echo "Usage: $0 [-i Init Script file] [-d Copy Destination] [Copy file]..."
 		echo -e "\t-i: Init Script file (default \"file://init.sh\")"
+		echo -e "\t-d: Destination of copy (default \"/home/ubuntu/\")"
 		exit 1
+
 	}
 	while getopts ":i:h" OPT; do
 		case $OPT in
 			i) INIT_SCRIPTS=$OPTARG
+				;;
+			d) DEST_COPY=$OPTARG
 				;;
 			h) usage_exit
 				;;
@@ -18,12 +22,13 @@ function create(){
 				;;
 		esac
 	done
+	shift $((OPTIND-1))
 
-	INIT_SCRIPTS=${INIT_SCRIPTS:-"file://../init.sh"}
+	INIT_SCRIPTS=${INIT_SCRIPTS:-"../init.sh"}
 
 	echo "Init Script File => $INIT_SCRIPTS"
 	# Creating Instance
-	create_ec2 "$INIT_SCRIPTS"
+	create_ec2 "$INIT_SCRIPTS" "$DEST_COPY" $@
 }
 
 create $@
