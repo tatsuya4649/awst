@@ -10,9 +10,7 @@ source utils/gets
 # $2 IP(Optional)
 # required: KEYPATH file(this file must contain Secret Key File Path)
 #
-function connect_instance(){
-	if [ -z "$DIR" ];then
-		echo '$DIR variables is empty'
+function connect_instance(){ if [ -z "$DIR" ];then echo '$DIR variables is empty'
 		exit 1
 	fi
 	KEYPATH_FILE="$DIR/KEYPATH"
