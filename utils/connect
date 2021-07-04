@@ -53,6 +53,7 @@ function get_ip_new_instance(){
 		aws ec2 describe-instances | \
 		jq -r ".Reservations[].Instances | \
 		select(.[].State.Name == \"running\") | \
+		select(.[].Tags != null) | \
 		select(.[].Tags[].Key == \"$KEY\") | \
 		select(.[].Tags[].Value == \"$VALUE\") | \
 		sort_by(.LaunchTime) | \
