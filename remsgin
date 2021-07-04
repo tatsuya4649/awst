@@ -1,9 +1,0 @@
-#!/bin/bash
-
-source utils/remsgin
-
-function remsgin(){
-	remove_sg_in $1 $2 $3
-}
-
-remsgin $@

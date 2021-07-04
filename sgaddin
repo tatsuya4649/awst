@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source utils/sgaddin
+
+function sgaddin(){
+	add_sg_in $1 $2 $3
+}
+
+sgaddin $1 $2 $3

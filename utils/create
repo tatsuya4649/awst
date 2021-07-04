@@ -55,7 +55,7 @@ function create_ec2(){
         wait_for_status_ok $CREATE_INSTANCE_IDS
 
 	INIT_SCRIPT="$1"
-	DEST="$2"
+	DEST=${2:-"/home/ubuntu/"}
 	shift 2
 	for INSTANCE in "$INSTANCE_IDS"; do
 		send_init_script -d "$DEST" "$INSTANCE" "$INIT_SCRIPT" $@
@@ -113,18 +113,19 @@ function send_init_script(){
 	echo -e "\tsend $SEND_FILE => ($USERNAME):$INSTANCE($SENDIP): $DEST_DIR"
 	# shift argument
 	shift 2
+	echo "Send file => $*"
 	# send file to instance
-	for ARG in $@; do
+	for ARG in "$@"; do
+		echo $ARG
 		for FILE_JSON in $(echo $ARG | jq ".[]"); do
 			FILE=$(echo FILE_JSON | jq ".name")
 			DEST=$(echo FILE_JSON | jq ".dest")
 			# send 'file' to new instance
-			scp -i $KEYPATH $FILE $USERNAME@$SENDIP:$DEST
+			scp -r -i $KEYPATH $FILE $USERNAME@$SENDIP:$DEST
 			echo -e "\tsend $FILE => $USERNAME:$INSTANCE($SENDIP): $DEST"
 		done
 	done
 	ssh -i $KEYPATH $USERNAME@$SENDIP "/bin/bash $DEST_DIR/$(echo $SEND_FILE | cut -d/ -f2)"
-	done
 }
 
 # wait for creating EC2 instances
@@ -139,6 +140,7 @@ function wait_for_running(){
         --instance-ids $*
         echo "Now Running $CREATE_INSTANCE_IDS!!!"
 }
+
 function wait_for_status_ok(){
         # argument check
         if [ -z "$*" ]; then
