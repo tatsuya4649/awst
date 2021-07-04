@@ -31,7 +31,7 @@ function get_ip_from_tag(){
                 select(.[].Tags[].Value == \"$VALUE\") | \
                 .[].PublicIpAddress"
         )
-        if [ -z "$IP_ADDRESSES" ] || [ $IP_ADDRESSES="null"]; then
+        if [ -z "$IP_ADDRESSES" ] || [ $IP_ADDRESSES="null" ]; then
                 eval echo "TAG\(\"$1\"\) No Instance" $QUIET
         else
                 eval echo "TAG\(\"$1\"\) IpAddresses:" $QUIET
