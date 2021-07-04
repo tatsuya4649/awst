@@ -110,15 +110,20 @@ function send_init_script(){
 	DEST_DIR=${DEST_DIR:-"/home/$USERNAME"}
 	# send 'init script file' to new instance
 	scp -i $KEYPATH $SEND_FILE $USERNAME@$SENDIP:$DEST_DIR
-	echo "\tsend $SEND_FILE => ($USERNAME):$INSTANCE($SENDIP): $DEST_DIR"
+	echo -e "\tsend $SEND_FILE => ($USERNAME):$INSTANCE($SENDIP): $DEST_DIR"
 	# shift argument
-	shift 3
+	shift 2
 	# send file to instance
-	for FILE in $@; do
-		# send 'file' to new instance
-		scp -i $KEYPATH $FILE $USERNAME@$SENDIP:$DEST_DIR
-		echo -e "\tsend $SEND_FILE => $USERNAME:$INSTANCE($SENDIP): $DEST_DIR"
-		ssh -i $KEYPATH $USERNAME@$SENDIP "/bin/bash $DEST_DIR/$(echo $SEND_FILE | cut -d/ -f2)"
+	for ARG in $@; do
+		for FILE_JSON in $(echo $ARG | jq ".[]"); do
+			FILE=$(echo FILE_JSON | jq ".name")
+			DEST=$(echo FILE_JSON | jq ".dest")
+			# send 'file' to new instance
+			scp -i $KEYPATH $FILE $USERNAME@$SENDIP:$DEST
+			echo -e "\tsend $FILE => $USERNAME:$INSTANCE($SENDIP): $DEST"
+		done
+	done
+	ssh -i $KEYPATH $USERNAME@$SENDIP "/bin/bash $DEST_DIR/$(echo $SEND_FILE | cut -d/ -f2)"
 	done
 }
 
