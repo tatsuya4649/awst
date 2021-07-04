@@ -27,6 +27,7 @@ function create(){
 	INIT_SCRIPTS=${INIT_SCRIPTS:-"../init.sh"}
 
 	echo "Init Script File => $INIT_SCRIPTS"
+	echo "File to send => $*"
 	# Creating Instance
 	create_ec2 "$INIT_SCRIPTS" "$DEST_COPY" $@
 }
