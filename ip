@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# get_tag
+source utils/gets
+
+# ip TAGS STATE
+function ip(){
+	function usage_exit(){
+		echo "Usage: $0 [-t Tag] [-s State]"
+		echo -e "\t-t: Search IP Address with Tag"
+		echo -e "\t-s: Search Ip Address with State"
+		exit 1
+	}
+	while getopts ":t:s:h" OPT; do
+		case $OPT in
+		t)	$TAGS=$OPTARG
+			;;
+		s)	$STATE=$OPTARG
+			;;
+		h)	usage_exit
+			;;
+		\?)	usage_exit
+			;;
+	done
+
+	if [ -z "$TAGS" ];then
+		get_tag
+	fi
+	if [ -z "$TAGS" ];then
+		echo "Not Tag found..."
+		usage_exit
+	fi
+	STATE=${STATE:-"runnig"}
+	get_ip_from_tag $TAGS $STATE
+}

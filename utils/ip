@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# tag_check,state_check
+source utils/check
+
+# $1 TAGS
+# $2 State(default running)
+# -q Quiet Option
+# Receive TAG, and return IP Addresses(IP_ADDRESSES)
+function get_ip_from_tag(){
+	tag_check $1
+	state_check $2
+
+	while getopts ":q" OPT; do
+		case $OPT in
+		q)
+			QUIET=">/dev/null 2>&1"
+			;;
+		\?)
+			;;
+		esac
+	done
+
+	IP_ADDRESSES=$(
+                aws ec2 describe-instances | \
+                jq -r ".Reservations[].Instances | \
+                select(.[].State.Name == \"$2\") | \
+		sort_by(.LaunchTime) | reverse | \
+                select(.[].Tags != null) | \
+                select(.[].Tags[].Key == \"$KEY\") | \
+                select(.[].Tags[].Value == \"$VALUE\") | \
+                .[].PublicIpAddress"
+        )
+        if [ -z "$IP_ADDRESSES" ]; then
+                eval echo "TAG\(\"$1\"\) No Instance" $QUIET
+        else
+		eval echo "LATEST" $QUIET
+		echo "====================="
+                eval echo "TAG\(\"$1\"\) IpAddresses:" $QUIET
+                echo "$IP_ADDRESSES"
+		echo "====================="
+		eval echo "OLDEST" $QUIET
+        fi
+}
