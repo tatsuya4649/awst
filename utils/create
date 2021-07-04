@@ -64,6 +64,7 @@ function create_ec2(){
 
 # send init script to new instances
 function send_init_script(){
+	echo $@
 	while getopts ":d:" OPT; do
 		case $OPT in
 			d) DEST_DIR=$OPTARG
@@ -72,6 +73,7 @@ function send_init_script(){
 		esac
 	done
 	shift $((OPTIND-1))
+	echo $@
 	# check insatnce
 	if [ -z "$1" ]; then
 		echo '$SEND_INSTANCE is empty...'
@@ -117,9 +119,11 @@ function send_init_script(){
 	# send file to instance
 	for ARG in "$@"; do
 		echo $ARG
-		for FILE_JSON in $(echo $ARG | jq ".[]"); do
-			FILE=$(echo FILE_JSON | jq ".name")
-			DEST=$(echo FILE_JSON | jq ".dest")
+		LENGTH=$(echo $ARG | jq ". | length")
+
+		for ((i=0;i<$LENGTH;i++));do
+			FILE=$(echo $ARG | jq -r ".[$i].name")
+			DEST=$(echo $ARG | jq -r ".[$i].dest")
 			# send 'file' to new instance
 			scp -r -i $KEYPATH $FILE $USERNAME@$SENDIP:$DEST
 			echo -e "\tsend $FILE => $USERNAME:$INSTANCE($SENDIP): $DEST"
