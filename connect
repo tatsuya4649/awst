@@ -2,6 +2,7 @@
 
 # connect_instance
 source ./utils/connect
+source ./utils/gets
 
 function connect(){
 	function usage_exit(){
@@ -22,8 +23,14 @@ function connect(){
 	done
 
 	if [ -z "$1" ]; then
-		echo "no username..."
-		exit 1
+		get_username
+		
+		if [ -z "$USERNAME" ]; then
+			echo "no username..."
+			exit 1
+		fi
+	else
+		USERNAME="$1"
 	fi
 
 	if [ -n "$CONNECT_IP" ]; then
@@ -31,7 +38,7 @@ function connect(){
 	else
 		echo "Connect Latest Launch Instance"
 	fi 
-	connect_instance $1 $CONNECT_IP
+	connect_instance $USERNAME $CONNECT_IP
 }
 
 connect $@
