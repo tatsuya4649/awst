@@ -1,9 +1,0 @@
-#!/bin/bash
-
-source utils/addsgin
-
-function addsgin(){
-	add_sg_in $1 $2 $3
-}
-
-addsgin $1 $2 $3

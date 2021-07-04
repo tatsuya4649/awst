@@ -55,7 +55,7 @@ function create_ec2(){
         wait_for_status_ok $CREATE_INSTANCE_IDS
 
 	INIT_SCRIPT="$1"
-	DEST="$2"
+	DEST=${2:-"/home/ubuntu/"}
 	shift 2
 	for INSTANCE in "$INSTANCE_IDS"; do
 		send_init_script -d "$DEST" "$INSTANCE" "$INIT_SCRIPT" $@
@@ -64,6 +64,7 @@ function create_ec2(){
 
 # send init script to new instances
 function send_init_script(){
+	echo $@
 	while getopts ":d:" OPT; do
 		case $OPT in
 			d) DEST_DIR=$OPTARG
@@ -72,6 +73,7 @@ function send_init_script(){
 		esac
 	done
 	shift $((OPTIND-1))
+	echo $@
 	# check insatnce
 	if [ -z "$1" ]; then
 		echo '$SEND_INSTANCE is empty...'
@@ -110,16 +112,23 @@ function send_init_script(){
 	DEST_DIR=${DEST_DIR:-"/home/$USERNAME"}
 	# send 'init script file' to new instance
 	scp -i $KEYPATH $SEND_FILE $USERNAME@$SENDIP:$DEST_DIR
-	echo "\tsend $SEND_FILE => ($USERNAME):$INSTANCE($SENDIP): $DEST_DIR"
+	echo -e "\tsend $SEND_FILE => ($USERNAME):$INSTANCE($SENDIP): $DEST_DIR"
 	# shift argument
-	shift 3
+	shift 2
+	echo "Send file => $*"
 	# send file to instance
-	for FILE in $@; do
-		# send 'file' to new instance
-		scp -i $KEYPATH $FILE $USERNAME@$SENDIP:$DEST_DIR
-		echo -e "\tsend $SEND_FILE => $USERNAME:$INSTANCE($SENDIP): $DEST_DIR"
-		ssh -i $KEYPATH $USERNAME@$SENDIP "/bin/bash $DEST_DIR/$(echo $SEND_FILE | cut -d/ -f2)"
+	for ARG in "$@"; do
+		LENGTH=$(echo $ARG | jq ". | length")
+
+		for ((i=0;i<$LENGTH;i++));do
+			FILE=$(echo $ARG | jq -r ".[$i].name")
+			DEST=$(echo $ARG | jq -r ".[$i].dest")
+			# send 'file' to new instance
+			scp -rp -i $KEYPATH $FILE $USERNAME@$SENDIP:$DEST
+			echo -e "\tsend $FILE => $USERNAME:$INSTANCE($SENDIP): $DEST"
+		done
 	done
+	ssh -i $KEYPATH $USERNAME@$SENDIP "/bin/bash $DEST_DIR/$(echo $SEND_FILE | cut -d/ -f2)"
 }
 
 # wait for creating EC2 instances
@@ -134,6 +143,7 @@ function wait_for_running(){
         --instance-ids $*
         echo "Now Running $CREATE_INSTANCE_IDS!!!"
 }
+
 function wait_for_status_ok(){
         # argument check
         if [ -z "$*" ]; then
