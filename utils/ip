@@ -36,9 +36,9 @@ function get_ip_from_tag(){
         else
                 eval echo "TAG\(\"$1\"\) IpAddresses:" $QUIET
 		eval echo "LATEST" $QUIET
-		echo "====================="
+		eval echo "=====================" $QUIET
                 echo "$IP_ADDRESSES"
-		echo "====================="
+		eval echo "=====================" $QUIET
 		eval echo "OLDEST" $QUIET
         fi
 }
