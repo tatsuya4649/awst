@@ -40,6 +40,14 @@ function get_ip_from_tag(){
 	fi
         if [ -z "$IP_ADDRESSES" ] && [ $IP_ADDRESSES="null" ]; then
                 eval echo "TAG\(\"$1\"\) No Instance" $QUIET
+		# Check have no tag instance
+		NO_TAG_INSTANCES=$(aws ec2 describe-instances | jq -r ".Reservations[].Instances | select(.[].Tag == null) | .[].InstanceId")
+		if [ -n "$NO_TAG_INSTANCE" ]; then
+			echo "WARNING: You have No Tag Instances!!!"
+			for INSTANCE in $NO_TAG_INSTANCES; do
+				echo "$INSTANCE"
+			done
+		fi
         else
                 eval echo "TAG\(\"$1\"\) IpAddresses:" $QUIET
 		eval echo "LATEST" $QUIET

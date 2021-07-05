@@ -25,6 +25,16 @@ function terminate_allinstances(){
         )
         if [ -z "$TERMINATE_INSTANCE_IDS" ]; then
 		echo "no running instance..."
+
+		# Check have no tag instance
+		NO_TAG_INSTANCES=$(aws ec2 describe-instances | jq -r ".Reservations[].Instances | select(.[].Tag == null) | .[].InstanceId")
+		if [ -n "$NO_TAG_INSTANCE" ]; then
+			echo "WARNING: You have No Tag Instances!!!"
+			for INSTANCE in $NO_TAG_INSTANCES; do
+				echo "$INSTANCE"
+			done
+		fi
+
                 exit 1
         fi
         echo -e "Now Running Instances($TAGS):\n$TERMINATE_INSTANCE_IDS"
