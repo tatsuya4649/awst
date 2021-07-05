@@ -5,6 +5,7 @@ source utils/check
 
 # $1 TAGS
 # $2 State(default running)
+# $3 Count(default 1)
 # -q Quiet Option
 # Receive TAG, and return IP Addresses(IP_ADDRESSES)
 function get_ip_from_tag(){
@@ -22,6 +23,8 @@ function get_ip_from_tag(){
 	tag_check $1
 	state_check $2
 
+	PICK_COUNT=$3
+
 	IP_ADDRESSES=$(
                 aws ec2 describe-instances | \
                 jq -r ".Reservations[].Instances | \
@@ -32,6 +35,9 @@ function get_ip_from_tag(){
                 select(.[].Tags[].Value == \"$VALUE\") | \
                 .[].PublicIpAddress"
         )
+	if [ -n "$PICK_COUNT" ]; then
+		IP_ADDRESS=$(echo IP_ADDRESSES | cut -d' ' -f1-$((PICK_COUNT+1)))
+	fi
         if [ -z "$IP_ADDRESSES" ] && [ $IP_ADDRESSES="null" ]; then
                 eval echo "TAG\(\"$1\"\) No Instance" $QUIET
         else

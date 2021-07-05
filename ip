@@ -29,6 +29,7 @@ function ip(){
 			;;
 		esac
 	done
+	shift $((OPTIND-1))
 
 	if [ -z "$TAGS" ];then
 		get_tag
@@ -38,7 +39,7 @@ function ip(){
 		usage_exit
 	fi
 	STATE=${STATE:-"running"}
-	get_ip_from_tag $QUIET_OPTION $TAGS $STATE
+	get_ip_from_tag $QUIET_OPTION $TAGS $STATE $@
 }
 
 ip $@

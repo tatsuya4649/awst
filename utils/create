@@ -40,6 +40,7 @@ function create_ec2(){
                 --security-group-ids $SGID \
                 --subnet-id $SUBNETID
 	)
+	export CREATE_COUNT
         INSTANCE_IDS=$(echo $INSTANCES | jq -r ".Instances[].InstanceId")
         CREATE_INSTANCE_IDS=$INSTANCE_IDS
         for INSTANCE in $INSTANCE_IDS; do

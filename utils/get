@@ -22,9 +22,9 @@ function get_tag_instances(){
                 .[].InstanceId"
         )
         if [ -z "$TAG_INSTANCEID" ]; then
-                eval echo "TAG\(\"$1\"\) No Instance" $3
+                eval echo "TAG\(\"$1\"\) No Instance" "$3"
         else
-                eval echo "TAG\(\"$1\"\) InstanceID:" $3
+                eval echo "TAG\(\"$1\"\) InstanceID:" "$3"
                 echo "$TAG_INSTANCEID"
         fi
 }

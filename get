@@ -6,14 +6,14 @@ source ./utils/get
 
 function get(){
 	function usage_exit(){
-		echo "Usage: $0 [-t Tag] [-s State]"
+		echo "Usage: $0 [-t Tag] [-s State] [-q]"
 		echo -e "\t-t: Search Tag(\"Key=key,Values=value\")"
 		echo -e "\t-s: Search State(default \"running\")"
 		echo -e "\t-q: Output Quiet"
 		exit 1
 	}
-	
-	local OPT OPTIND OPTARG
+
+	local OPT OPTIND OPTARG QUIET
 	while getopts ":t:s:hq" OPT; do
 		case $OPT in
 			t)
@@ -23,7 +23,7 @@ function get(){
 				STATE=$OPTARG
 				;;
 			q)
-				QUIET=">/dev/null 2>&1"
+				QUIET=" >/dev/null 2>&1"
 				;;
 			h) usage_exit
 				;;
@@ -31,6 +31,7 @@ function get(){
 				;;
 		esac
 	done
+
 	# Default Search State => "running"
 	STATE=${STATE:-"running"}
 	if [ -z "$TAGS" ]; then
