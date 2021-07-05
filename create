@@ -28,7 +28,6 @@ function create(){
 	done
 	shift $((OPTIND-1))
 	CREATE_COUNT=${CREATE_COUNT:-1}
-	export CREATE_COUNT
 
 	INIT_SCRIPTS=${INIT_SCRIPTS:-"../init.sh"}
 
@@ -36,6 +35,7 @@ function create(){
 	echo "File to send => $*"
 	# Creating Instance
 	create_ec2 -c $CREATE_COUNT "$INIT_SCRIPTS" "$DEST_COPY" $@
+	return $CREATE_COUNT
 }
 
 create $@

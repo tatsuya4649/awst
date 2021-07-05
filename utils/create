@@ -33,7 +33,6 @@ function create_ec2(){
 		esac
 	done
 	shift $((OPTIND-1))
-	export CREATE_COUNT
 
 	if nume_check $CREATE_COUNT; then
 		CREATE_COUNT="1"
@@ -79,6 +78,7 @@ function create_ec2(){
 	for INSTANCE in "$INSTANCE_IDS"; do
 		send_init_script -d "$DEST" "$INSTANCE" "$INIT_SCRIPT" $@
 	done
+	return $CREATE_COUNT
 }
 
 # send init script to new instances
