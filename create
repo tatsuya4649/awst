@@ -7,14 +7,18 @@ function create(){
 		echo "Usage: $0 [-i Init Script file] [-d Copy Destination] [Copy file]..."
 		echo -e "\t-i: Init Script file (default \"file://init.sh\")"
 		echo -e "\t-d: Destination of copy (default \"/home/ubuntu/\")"
+		echo -e "\t-c: Count of creating instnaces (default \"1\")"
 		exit 1
 
 	}
-	while getopts ":i:h" OPT; do
+	local OPT OPTIND OPTARG
+	while getopts ":i:c:h" OPT; do
 		case $OPT in
 			i) INIT_SCRIPTS=$OPTARG
 				;;
 			d) DEST_COPY=$OPTARG
+				;;
+			c) CREATE_COUNT=$OPTARG
 				;;
 			h) usage_exit
 				;;
@@ -23,13 +27,15 @@ function create(){
 		esac
 	done
 	shift $((OPTIND-1))
+	CREATE_COUNT=${CREATE_COUNT:-1}
+	export CREATE_COUNT
 
 	INIT_SCRIPTS=${INIT_SCRIPTS:-"../init.sh"}
 
 	echo "Init Script File => $INIT_SCRIPTS"
 	echo "File to send => $*"
 	# Creating Instance
-	create_ec2 "$INIT_SCRIPTS" "$DEST_COPY" $@
+	create_ec2 -c $CREATE_COUNT "$INIT_SCRIPTS" "$DEST_COPY" $@
 }
 
 create $@
