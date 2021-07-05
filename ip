@@ -11,13 +11,17 @@ function ip(){
 		echo "Usage: $0 [-t Tag] [-s State]"
 		echo -e "\t-t: Search IP Address with Tag"
 		echo -e "\t-s: Search Ip Address with State"
+		echo -e "\t-q: Quiet Output"
 		exit 1
 	}
-	while getopts ":t:s:h" OPT; do
+	local OPT OPTARG OPTIND QUIET_OPTION
+	while getopts ":t:s:qh" OPT; do
 		case $OPT in
 		t)	TAGS=$OPTARG
 			;;
 		s)	STATE=$OPTARG
+			;;
+		q)	QUIET_OPTION="-q"
 			;;
 		h)	usage_exit
 			;;
@@ -34,7 +38,7 @@ function ip(){
 		usage_exit
 	fi
 	STATE=${STATE:-"running"}
-	get_ip_from_tag $TAGS $STATE
+	get_ip_from_tag $QUIET_OPTION $TAGS $STATE
 }
 
 ip $@

@@ -10,6 +10,7 @@ function create(){
 		exit 1
 
 	}
+	local OPT OPTIND OPTARG
 	while getopts ":i:h" OPT; do
 		case $OPT in
 			i) INIT_SCRIPTS=$OPTARG
