@@ -12,7 +12,8 @@ function get(){
 		echo -e "\t-q: Output Quiet"
 		exit 1
 	}
-
+	
+	local OPT OPTIND OPTARG
 	while getopts ":t:s:hq" OPT; do
 		case $OPT in
 			t)

@@ -49,7 +49,7 @@ function create_ec2(){
 
         if [ -n "$1" ];then
                 echo -n "Init Scripts:"
-		echo "$1"
+                echo "$1"
         else
                 echo "Warning: No Init Scripts"
         fi
@@ -82,7 +82,7 @@ function create_ec2(){
 
 # send init script to new instances
 function send_init_script(){
-	echo $@
+	local OPT OPTARG OPTIND
 	while getopts ":d:" OPT; do
 		case $OPT in
 			d) DEST_DIR=$OPTARG

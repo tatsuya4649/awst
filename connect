@@ -11,6 +11,7 @@ function connect(){
 		exit 1
 	}
 
+	local OPT OPTARG OPTIND
 	while getopts ":i:h" OPT;do
 		case $OPT in
 			i) CONNECT_IP=$OPTARG
