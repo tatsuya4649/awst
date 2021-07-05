@@ -27,11 +27,9 @@ function create_ec2(){
         get_tag
 
         if [ -n "$1" ];then
-                USERDATA="--user-data $1"
-                echo "Init Scripts:"
-                echo "$USERDATA"
+                echo -n "Init Scripts:"
+                echo "$1"
         else
-                USERDATA=
                 echo "Warning: No Init Scripts"
         fi
         INSTANCES=$(aws ec2 run-instances \
@@ -40,8 +38,7 @@ function create_ec2(){
                 --instance-type $INSTANCETYPE \
                 --key-name $KEYNAME \
                 --security-group-ids $SGID \
-                --subnet-id $SUBNETID \
-                #$USERDATA
+                --subnet-id $SUBNETID
 	)
         INSTANCE_IDS=$(echo $INSTANCES | jq -r ".Instances[].InstanceId")
         CREATE_INSTANCE_IDS=$INSTANCE_IDS
