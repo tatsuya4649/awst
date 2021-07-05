@@ -9,6 +9,7 @@ function term(){
 		exit 1
 	}
 
+	local OPT OPTIND
 	while getopts ":h" OPT; do
 		case $OPT in
 			h) usage_exit

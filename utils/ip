@@ -8,18 +8,19 @@ source utils/check
 # -q Quiet Option
 # Receive TAG, and return IP Addresses(IP_ADDRESSES)
 function get_ip_from_tag(){
-	tag_check $1
-	state_check $2
-
+	local OPTIND OPT
 	while getopts ":q" OPT; do
 		case $OPT in
 		q)
-			QUIET=">/dev/null 2>&1"
+			QUIET=" >/dev/null 2>&1"
 			;;
 		\?)
 			;;
 		esac
 	done
+	shift $((OPTIND-1))
+	tag_check $1
+	state_check $2
 
 	IP_ADDRESSES=$(
                 aws ec2 describe-instances | \
