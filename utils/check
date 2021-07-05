@@ -40,3 +40,14 @@ function state_check(){
         esac
 }
 
+
+function nume_check(){
+	if [ -z "$1" ]; then
+		echo "nothing argument..."
+	fi
+	expr "$1" + 1 >/dev/null 2>&1
+	if [ $? -ge 2 ]; then
+		return 1
+	fi
+	return 0
+}

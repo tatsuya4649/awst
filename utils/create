@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# nume_check
+source ./utils/check
 # get_imageid,get_instancetype,get_securitygroup,
 # get_keybname,get_subnetid,get_tag,get_keypath
 source ./utils/gets
@@ -19,6 +21,25 @@ source ./utils/create_tag
 # $2: Copy distination file 
 # $@: File to send
 function create_ec2(){
+	local OPT OPTIND OPTARG
+	while getopts ":c:" OPT; do
+		case $OPT in
+		c)	CREATE_COUNT=$OPTARG
+			;;
+		\?)	
+			echo "unknown option"
+			exit 1
+			;;
+		esac
+	done
+	shift $((OPTIND-1))
+	export CREATE_COUNT
+
+	if nume_check $CREATE_COUNT; then
+		CREATE_COUNT="1"
+	fi
+	echo "Creating $CREATE_COUNT Instances!"
+
         get_imageid
         get_instancetype
         get_securitygroup
@@ -27,11 +48,9 @@ function create_ec2(){
         get_tag
 
         if [ -n "$1" ];then
-                USERDATA="--user-data $1"
-                echo "Init Scripts:"
-                echo "$USERDATA"
+                echo -n "Init Scripts:"
+		echo "$1"
         else
-                USERDATA=
                 echo "Warning: No Init Scripts"
         fi
         INSTANCES=$(aws ec2 run-instances \
@@ -40,8 +59,7 @@ function create_ec2(){
                 --instance-type $INSTANCETYPE \
                 --key-name $KEYNAME \
                 --security-group-ids $SGID \
-                --subnet-id $SUBNETID \
-                #$USERDATA
+                --subnet-id $SUBNETID
 	)
         INSTANCE_IDS=$(echo $INSTANCES | jq -r ".Instances[].InstanceId")
         CREATE_INSTANCE_IDS=$INSTANCE_IDS

@@ -20,7 +20,6 @@ function get_ip_from_tag(){
 			;;
 		esac
 	done
-
 	IP_ADDRESSES=$(
                 aws ec2 describe-instances | \
                 jq -r ".Reservations[].Instances | \
